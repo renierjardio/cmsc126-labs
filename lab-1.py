@@ -5,7 +5,6 @@ import base64
 class PhysicalLayer:
     def send(self, data):
         bits = ''.join(format(byte, '08b') for byte in data.encode())
-        print(f"[PHYSICAL] Transmitting bits: {bits}")
         return bits  
             
     def receive(self, bits):
@@ -20,7 +19,6 @@ class DataLinkLayer:
         
     def send(self, data):
         frame = {'MAC': self.mac_address, 'Payload': data}
-        print(f"[DATA_LINK] Encapsulating in frame: {frame}")
         return json.dumps(frame)
     
     def receive(self, frame):
@@ -35,7 +33,6 @@ class NetworkLayer:
         
     def send(self, data, dest_ip):
         packet = {'IP': self.ip_address, 'Dest_IP': dest_ip, 'Data': data}
-        print(f"[NETWORK] Encapsulating in packet: {packet}")
         return json.dumps(packet)
     
     def receive(self, packet):
@@ -47,7 +44,6 @@ class NetworkLayer:
 class TransportLayer:
     def send(self, data):
         segment = {'Seq': 1, 'Ack': 1, 'Data': data}
-        print(f"[TRANSPORT] Encapsulating in segment: {segment}")
         return json.dumps(segment)
     
     def receive(self, segment):
@@ -61,7 +57,6 @@ class SessionLayer:
         if isinstance(data, bytes):
             data = base64.b64encode(data).decode('utf-8')
         session = {'Session_ID': 12345, 'Data': data}
-        print(f"[SESSION] Managing session: {session}")
         return json.dumps(session)
         
     def receive(self, session):
@@ -78,7 +73,6 @@ class SessionLayer:
 class PresentationLayer:
     def send(self, data):
         encoded_data = pickle.dumps(data)
-        print(f"[PRESENTATION] Encoding data: {encoded_data}")
         return encoded_data
     
     def receive(self, encoded_data):
@@ -90,7 +84,6 @@ class PresentationLayer:
 class ApplicationLayer:
     def send(self, data):
         request = {'Request': 'GET', 'Payload': data}
-        print(f"[APPLICATION] Sending request: {request}")
         return json.dumps(request)
     
     def receive(self, request):
