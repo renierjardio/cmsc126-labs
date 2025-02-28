@@ -5,11 +5,12 @@ import base64
 class PhysicalLayer:
     def send(self, data):
         bits = ''.join(format(byte, '08b') for byte in data.encode())
+        print(f"[PHYSICAL] Converting data to bits: {bits}")
         return bits  
             
     def receive(self, bits):
         bytes_data = bytes(int(bits[i:i+8], 2) for i in range(0, len(bits), 8)).decode(errors='ignore')
-        print(f"[PHYSICAL] Received raw bits, converting back to data...")
+        print(f"[PHYSICAL] Received raw bits: {bytes_data}")
         return bytes_data
             
 
@@ -19,11 +20,12 @@ class DataLinkLayer:
         
     def send(self, data):
         frame = {'MAC': self.mac_address, 'Payload': data}
+        print(f"[DATA_LINK] Encapsulating frame: {frame}")
         return json.dumps(frame)
     
     def receive(self, frame):
-        print(f"[DATA_LINK] Decapsulating frame...")
         frame_data = json.loads(frame)
+        print(f"[DATA_LINK] Decapsulating frame: {frame_data}")
         return frame_data['Payload']
                 
 
@@ -33,22 +35,24 @@ class NetworkLayer:
         
     def send(self, data, dest_ip):
         packet = {'IP': self.ip_address, 'Dest_IP': dest_ip, 'Data': data}
+        print(f"[NETWORK] Encapsulating packet: {packet}")
         return json.dumps(packet)
     
     def receive(self, packet):
-        print(f"[NETWORK] Decapsulating packet...")
         packet_data = json.loads(packet)
+        print(f"[NETWORK] Decapsulating packet: {packet_data}")
         return packet_data['Data']
             
 
 class TransportLayer:
     def send(self, data):
         segment = {'Seq': 1, 'Ack': 1, 'Data': data}
+        print(f"[TRANSPORT] Encapsulating segment: {segment}")
         return json.dumps(segment)
     
     def receive(self, segment):
-        print(f"[TRANSPORT] Decapsulating segment...")
         segment_data = json.loads(segment)
+        print(f"[TRANSPORT] Decapsulating segment: {segment_data}")
         return segment_data['Data'] 
 
 
@@ -57,11 +61,12 @@ class SessionLayer:
         if isinstance(data, bytes):
             data = base64.b64encode(data).decode('utf-8')
         session = {'Session_ID': 12345, 'Data': data}
+        print(f"[SESSION] Managing session: {session}")
         return json.dumps(session)
         
     def receive(self, session):
-        print(f"[SESSION] Handling session...")
         session_data = json.loads(session)
+        print(f"[SESSION] Handling session: {session_data}")
         data = session_data['Data']
         try:
             data = base64.b64decode(data.encode('utf-8'))
@@ -73,6 +78,7 @@ class SessionLayer:
 class PresentationLayer:
     def send(self, data):
         encoded_data = pickle.dumps(data)
+        print(f"[PRESENTATION] Encoding data: {encoded_data}")
         return encoded_data
     
     def receive(self, encoded_data):
@@ -84,6 +90,7 @@ class PresentationLayer:
 class ApplicationLayer:
     def send(self, data):
         request = {'Request': 'GET', 'Payload': data}
+        print(f"[APPLICATION] Sending request: {request}")
         return json.dumps(request)
     
     def receive(self, request):
