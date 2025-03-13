@@ -1,12 +1,12 @@
 from layers import physical, datalink, network, transport, session, presentation, application
 
-def simulate_communication(data, dest_ip, mac_address):
+def simulate_communication(data, dest_ip):
     app = application.ApplicationLayer()
     pres = presentation.PresentationLayer()
     sesh = session.SessionLayer()
     transp = transport.TransportLayer()
-    net = network.NetworkLayer(ip_address='192.168.1.1')
-    dtl = datalink.DataLinkLayer(mac_address)
+    net = network.NetworkLayer()
+    dtl = datalink.DataLinkLayer()
     phys = physical.PhysicalLayer()
     
     # Sending side
@@ -33,9 +33,7 @@ def simulate_communication(data, dest_ip, mac_address):
 def main():
     print(f"Hello! Welcome to the OSI Model Python Simulation.")
     sent_message = input("Please enter a data to be sent: ")
-    dest_ip = input("Now, please enter the destination IP: ")
-    mac_address = input("Lastly, input the MAC Address: ")
-    received_message = simulate_communication(sent_message, dest_ip, mac_address)
+    received_message = simulate_communication(sent_message, "192.168.1.2")
     
     print(f"\nSuccessful! Received message is: {received_message}")
     
